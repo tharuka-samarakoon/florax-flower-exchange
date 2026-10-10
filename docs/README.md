@@ -35,8 +35,8 @@ Test cases are prepared to evaluate the system's expected behaviour and identify
 
 Testing documentation:
 
-- [View QA Test Cases (Markdown)](docs/QA-Test-Cases.md)
-- [QA Test Cases – Excel](docs/Flower_Exchange_QA_Test_Cases.xlsx)
+- [View QA Test Cases (Markdown)](QA-Test-Cases.md)
+- [QA Test Cases – Excel](Flower_Exchange_QA_Test_Cases.xlsx)
 
 Test results should be updated based on actual test execution.
 
