@@ -35,8 +35,7 @@ Test cases are prepared to evaluate the system's expected behaviour and identify
 
 Testing documentation:
 
-- [QA Test Cases](docs/QA-Test-Cases.md)
-- [QA Test Cases – Excel](docs/FloraX_QA_Test_Cases.xlsx)
+- [QA Test Cases – Excel](docs/Flower_Exchange_QA_Test_Cases.xlsx)
 
 Test results should be updated based on actual test execution.
 
