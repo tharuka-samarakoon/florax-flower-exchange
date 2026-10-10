@@ -1,0 +1,22 @@
+USE flower_exchange;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS active TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE flowers ADD COLUMN IF NOT EXISTS image_url VARCHAR(500) NULL;
+ALTER TABLE flowers ADD COLUMN IF NOT EXISTS active TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE notifications ADD COLUMN IF NOT EXISTS is_read TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE trades ADD COLUMN IF NOT EXISTS buyer_confirmed TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE trades ADD COLUMN IF NOT EXISTS seller_confirmed TINYINT(1) NOT NULL DEFAULT 0;
+ALTER TABLE trades ADD COLUMN IF NOT EXISTS status ENUM('PENDING','COMPLETED') NOT NULL DEFAULT 'PENDING';
+UPDATE flowers SET image_url='https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1000&q=88' WHERE symbol='rose' AND (image_url IS NULL OR image_url='');
+UPDATE flowers SET image_url='https://images.unsplash.com/photo-1523659591886-4e6cf4f429b7?auto=format&fit=crop&w=1000&q=88' WHERE symbol='tulip' AND (image_url IS NULL OR image_url='');
+UPDATE flowers SET image_url='https://images.unsplash.com/photo-1495231916356-a86217efff12?auto=format&fit=crop&w=1000&q=88' WHERE symbol='gerbera' AND (image_url IS NULL OR image_url='');
+UPDATE flowers SET image_url='https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1000&q=88' WHERE symbol='lily' AND (image_url IS NULL OR image_url='');
+INSERT INTO users(trader_id,role,full_name,business_name,phone,email,password_hash,district,address) SELECT 'BUYER0001','buyer','Demo Buyer','FloraX Buyer Demo','0710000001','buyer@florax.test','$2y$12$Za4arToaXYS0OCgaQCIBZuyEVIXnNZNpigw7qk7ZpChSCjRqgT632','Colombo','Colombo' WHERE NOT EXISTS(SELECT 1 FROM users WHERE email='buyer@florax.test');
+INSERT INTO users(trader_id,role,full_name,business_name,phone,email,password_hash,district,address) SELECT 'SELLER0001','seller','Demo Grower','FloraX Grower Demo','0710000002','seller@florax.test','$2y$12$KDy6dCGoZENZ9hDQpzZsyeKkDL00glPbWmf8RngfV2bg.nsS3hLPO','Nuwara Eliya','Nuwara Eliya' WHERE NOT EXISTS(SELECT 1 FROM users WHERE email='seller@florax.test');
+
+CREATE TABLE IF NOT EXISTS market_prices(symbol VARCHAR(30) PRIMARY KEY,current_price DECIMAL(12,2) NOT NULL,previous_close DECIMAL(12,2) NOT NULL,day_open DECIMAL(12,2) NOT NULL,day_high DECIMAL(12,2) NOT NULL,day_low DECIMAL(12,2) NOT NULL,volume INT NOT NULL DEFAULT 0,last_trade_at DATETIME NULL,CONSTRAINT fk_price_flower FOREIGN KEY(symbol) REFERENCES flowers(symbol));
+INSERT INTO market_prices(symbol,current_price,previous_close,day_open,day_high,day_low,volume) SELECT f.symbol,f.reference_price,f.reference_price,f.reference_price,f.reference_price,f.reference_price,0 FROM flowers f LEFT JOIN market_prices mp ON mp.symbol=f.symbol WHERE mp.symbol IS NULL;
+ALTER TABLE market_status ADD COLUMN IF NOT EXISTS open_time TIME NOT NULL DEFAULT '08:00:00';
+ALTER TABLE market_status ADD COLUMN IF NOT EXISTS close_time TIME NOT NULL DEFAULT '17:00:00';
+ALTER TABLE market_status ADD COLUMN IF NOT EXISTS timezone VARCHAR(64) NOT NULL DEFAULT 'Asia/Colombo';
+ALTER TABLE market_status ADD COLUMN IF NOT EXISTS schedule_enabled TINYINT(1) NOT NULL DEFAULT 1;
+ALTER TABLE market_status ADD COLUMN IF NOT EXISTS manual_override TINYINT(1) NULL DEFAULT NULL;
